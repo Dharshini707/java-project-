@@ -1,25 +1,17 @@
 package backend.service;
 
-import backend.entity.Item;
-import backend.repository.ItemRepository;
-import org.springframework.stereotype.Service;
-
+import backend.dto.ItemDTO;
 import java.util.List;
 
-@Service
-public class ItemService {
+public interface ItemService {
 
-    private final ItemRepository itemRepository;
+    ItemDTO createItem(ItemDTO itemDTO);
 
-    public ItemService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
+    ItemDTO getItemById(Long id);
 
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
-    }
+    List<ItemDTO> getAllItems();
 
-    public Item saveItem(Item item) {
-        return itemRepository.save(item);
-    }
+    ItemDTO updateItem(Long id, ItemDTO itemDTO);
+
+    void deleteItem(Long id);
 }
