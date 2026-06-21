@@ -6,16 +6,9 @@ public class BomLinkDTO {
     private Long parentItemId;
     private Long childItemId;
     private Double quantity;
+    private String unit;
 
-    public BomLinkDTO() {
-    }
-
-    public BomLinkDTO(Long id, Long parentItemId, Long childItemId, Double quantity) {
-        this.id = id;
-        this.parentItemId = parentItemId;
-        this.childItemId = childItemId;
-        this.quantity = quantity;
-    }
+    public BomLinkDTO() {}
 
     public Long getId() {
         return id;
@@ -47,5 +40,13 @@ public class BomLinkDTO {
 
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }
