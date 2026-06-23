@@ -1,11 +1,26 @@
 package backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 public class BomLinkDTO {
 
     private Long id;
+
+    @NotNull(message = "Parent Item ID is required")
     private Long parentItemId;
+
+    @NotNull(message = "Child Item ID is required")
     private Long childItemId;
+
+    @NotNull(message = "Quantity is required")
+    @Positive(message = "Quantity must be greater than 0")
     private Double quantity;
+
+    @NotBlank(message = "Unit cannot be empty")
+    @Size(max = 10, message = "Unit cannot exceed 10 characters")
     private String unit;
 
     public BomLinkDTO() {}

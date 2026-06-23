@@ -2,6 +2,7 @@ package backend.controller;
 
 import backend.dto.BomLinkDTO;
 import backend.service.BomLinkService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class BomLinkController {
 
     // CREATE BOM
     @PostMapping
-    public ResponseEntity<BomLinkDTO> create(@RequestBody BomLinkDTO dto) {
+    public ResponseEntity<BomLinkDTO> create(@Valid @RequestBody BomLinkDTO dto) {
         return ResponseEntity.ok(bomLinkService.createBomLink(dto));
     }
 
@@ -39,7 +40,7 @@ public class BomLinkController {
     @PutMapping("/{id}")
     public ResponseEntity<BomLinkDTO> update(
             @PathVariable Long id,
-            @RequestBody BomLinkDTO dto) {
+            @Valid @RequestBody BomLinkDTO dto) {
         return ResponseEntity.ok(bomLinkService.updateBomLink(id, dto));
     }
 

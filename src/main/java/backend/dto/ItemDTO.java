@@ -1,10 +1,22 @@
 package backend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class ItemDTO {
 
     private Long id;
+
+    @NotBlank(message = "Item code cannot be empty")
+    @Size(max = 20, message = "Item code cannot exceed 20 characters")
     private String itemCode;
+
+    @NotBlank(message = "Item name cannot be empty")
+    @Size(max = 100, message = "Item name cannot exceed 100 characters")
     private String itemName;
+
+    @NotBlank(message = "Unit cannot be empty")
+    @Size(max = 10, message = "Unit cannot exceed 10 characters")
     private String unit;
 
     public ItemDTO() {

@@ -2,6 +2,7 @@ package backend.controller;
 
 import backend.dto.ItemDTO;
 import backend.service.ItemService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDTO createItem(@RequestBody ItemDTO itemDTO) {
+    public ItemDTO createItem(@Valid @RequestBody ItemDTO itemDTO) {
         return itemService.createItem(itemDTO);
     }
 
@@ -34,7 +35,7 @@ public class ItemController {
 
     @PutMapping("/{id}")
     public ItemDTO updateItem(@PathVariable Long id,
-                              @RequestBody ItemDTO itemDTO) {
+                              @Valid @RequestBody ItemDTO itemDTO) {
         return itemService.updateItem(id, itemDTO);
     }
 
