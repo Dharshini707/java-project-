@@ -50,5 +50,7 @@ public class MRPService {
             explodeBOM(link.getChildItemId(), totalQty);
         }
     }
-
+    public void aggregateMaterials() {
+    System.out.println("Aggregating duplicate raw materials");
+}
 }
