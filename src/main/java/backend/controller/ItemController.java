@@ -3,13 +3,14 @@ package backend.controller;
 import backend.dto.ItemDTO;
 import backend.service.ItemService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/items")
-@CrossOrigin(origins = "*")
 public class ItemController {
 
     private final ItemService itemService;
@@ -18,29 +19,36 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+    // CREATE
     @PostMapping
-    public ItemDTO createItem(@Valid @RequestBody ItemDTO itemDTO) {
-        return itemService.createItem(itemDTO);
+    public ResponseEntity<ItemDTO> createItem(@Valid @RequestBody ItemDTO itemDTO) {
+        return new ResponseEntity<>(itemService.createItem(itemDTO), HttpStatus.CREATED);
     }
 
+    // GET BY ID
     @GetMapping("/{id}")
-    public ItemDTO getItemById(@PathVariable Long id) {
-        return itemService.getItemById(id);
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.getItemById(id));
     }
 
+    // GET ALL
     @GetMapping
-    public List<ItemDTO> getAllItems() {
-        return itemService.getAllItems();
+    public ResponseEntity<List<ItemDTO>> getAllItems() {
+        return ResponseEntity.ok(itemService.getAllItems());
     }
 
+    // UPDATE
     @PutMapping("/{id}")
-    public ItemDTO updateItem(@PathVariable Long id,
-                              @Valid @RequestBody ItemDTO itemDTO) {
-        return itemService.updateItem(id, itemDTO);
+    public ResponseEntity<ItemDTO> updateItem(
+            @PathVariable Long id,
+            @Valid @RequestBody ItemDTO itemDTO) {
+        return ResponseEntity.ok(itemService.updateItem(id, itemDTO));
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id) {
+    public ResponseEntity<String> deleteItem(@PathVariable Long id) {
         itemService.deleteItem(id);
+        return ResponseEntity.ok("Item deleted successfully");
     }
 }

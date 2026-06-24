@@ -15,17 +15,20 @@ public class ItemDTO {
     @Size(max = 100, message = "Item name cannot exceed 100 characters")
     private String itemName;
 
+    @Size(max = 255, message = "Description cannot exceed 255 characters")
+    private String description;   // ✅ ADDED (was missing)
+
     @NotBlank(message = "Unit cannot be empty")
     @Size(max = 10, message = "Unit cannot exceed 10 characters")
     private String unit;
 
-    public ItemDTO() {
-    }
+    public ItemDTO() {}
 
-    public ItemDTO(Long id, String itemCode, String itemName, String unit) {
+    public ItemDTO(Long id, String itemCode, String itemName, String description, String unit) {
         this.id = id;
         this.itemCode = itemCode;
         this.itemName = itemName;
+        this.description = description;   // ✅ FIXED
         this.unit = unit;
     }
 
@@ -51,6 +54,14 @@ public class ItemDTO {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public String getDescription() {   // ✅ ADDED
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUnit() {

@@ -6,6 +6,8 @@ import backend.entity.Item;
 import backend.repository.BomLinkRepository;
 import backend.repository.ItemRepository;
 import backend.service.BomLinkService;
+import backend.exception.BomNotFoundException;
+import backend.exception.ItemNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,10 +34,12 @@ public class BomLinkServiceImpl implements BomLinkService {
         }
 
         Item parent = itemRepository.findById(dto.getParentItemId())
-                .orElseThrow(() -> new RuntimeException("Parent item not found"));
+                .orElseThrow(() ->
+        new ItemNotFoundException("Parent item not found"));
 
         Item child = itemRepository.findById(dto.getChildItemId())
-                .orElseThrow(() -> new RuntimeException("Child item not found"));
+                .orElseThrow(() ->
+        new ItemNotFoundException("Child item not found"));
 
         BomLink bom = new BomLink();
         bom.setParentItem(parent);
@@ -53,7 +57,8 @@ public class BomLinkServiceImpl implements BomLinkService {
     public BomLinkDTO getBomLinkById(Long id) {
 
         BomLink bom = bomLinkRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BOM not found"));
+                .orElseThrow(() ->
+        new BomNotFoundException("BOM not found with id " + id));
 
         return toDTO(bom);
     }
@@ -73,13 +78,16 @@ public class BomLinkServiceImpl implements BomLinkService {
     public BomLinkDTO updateBomLink(Long id, BomLinkDTO dto) {
 
         BomLink existing = bomLinkRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("BOM not found"));
+                .orElseThrow(() ->
+        new BomNotFoundException("BOM not found with id " + id));
 
         Item parent = itemRepository.findById(dto.getParentItemId())
-                .orElseThrow(() -> new RuntimeException("Parent item not found"));
+                .orElseThrow(() ->
+        new ItemNotFoundException("Parent item not found"));
 
         Item child = itemRepository.findById(dto.getChildItemId())
-                .orElseThrow(() -> new RuntimeException("Child item not found"));
+                .orElseThrow(() ->
+        new ItemNotFoundException("Child item not found"));
 
         if (parent.getId().equals(child.getId())) {
             throw new RuntimeException("Self reference not allowed");
@@ -98,8 +106,8 @@ public class BomLinkServiceImpl implements BomLinkService {
     public void deleteBomLink(Long id) {
 
         if (!bomLinkRepository.existsById(id)) {
-            throw new RuntimeException("BOM not found");
-        }
+    throw new BomNotFoundException("BOM not found with id " + id);
+}
 
         bomLinkRepository.deleteById(id);
     }

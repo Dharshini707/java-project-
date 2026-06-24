@@ -4,6 +4,7 @@ import backend.dto.ItemDTO;
 import backend.entity.Item;
 import backend.repository.ItemRepository;
 import backend.service.ItemService;
+import backend.exception.ItemNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,20 +19,24 @@ public class ItemServiceImpl implements ItemService {
         this.itemRepository = itemRepository;
     }
 
+    // ENTITY -> DTO
     private ItemDTO mapToDTO(Item item) {
         return new ItemDTO(
                 item.getId(),
                 item.getItemCode(),
                 item.getItemName(),
+                item.getDescription(),   // ✅ FIXED (was missing)
                 item.getUnit()
         );
     }
 
+    // DTO -> ENTITY
     private Item mapToEntity(ItemDTO dto) {
         Item item = new Item();
         item.setId(dto.getId());
         item.setItemCode(dto.getItemCode());
         item.setItemName(dto.getItemName());
+        item.setDescription(dto.getDescription()); // ✅ FIXED (was missing)
         item.setUnit(dto.getUnit());
         return item;
     }
@@ -45,7 +50,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDTO getItemById(Long id) {
-        Item item = itemRepository.findById(id).orElseThrow();
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() ->
+                        new ItemNotFoundException("Item not found with id " + id));
+
         return mapToDTO(item);
     }
 
@@ -60,10 +68,13 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDTO updateItem(Long id, ItemDTO itemDTO) {
 
-        Item item = itemRepository.findById(id).orElseThrow();
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() ->
+                        new ItemNotFoundException("Item not found with id " + id));
 
         item.setItemCode(itemDTO.getItemCode());
         item.setItemName(itemDTO.getItemName());
+        item.setDescription(itemDTO.getDescription()); // ✅ FIXED
         item.setUnit(itemDTO.getUnit());
 
         Item updated = itemRepository.save(item);
