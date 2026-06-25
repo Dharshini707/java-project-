@@ -1,6 +1,7 @@
 package backend.service.impl;
 
 import backend.dto.BomLinkDTO;
+import backend.dto.BomTreeResponse;
 import backend.entity.BomLink;
 import backend.entity.Item;
 import backend.repository.BomLinkRepository;
@@ -35,11 +36,11 @@ public class BomLinkServiceImpl implements BomLinkService {
 
         Item parent = itemRepository.findById(dto.getParentItemId())
                 .orElseThrow(() ->
-        new ItemNotFoundException("Parent item not found"));
+                        new ItemNotFoundException("Parent item not found"));
 
         Item child = itemRepository.findById(dto.getChildItemId())
                 .orElseThrow(() ->
-        new ItemNotFoundException("Child item not found"));
+                        new ItemNotFoundException("Child item not found"));
 
         BomLink bom = new BomLink();
         bom.setParentItem(parent);
@@ -58,7 +59,7 @@ public class BomLinkServiceImpl implements BomLinkService {
 
         BomLink bom = bomLinkRepository.findById(id)
                 .orElseThrow(() ->
-        new BomNotFoundException("BOM not found with id " + id));
+                        new BomNotFoundException("BOM not found with id " + id));
 
         return toDTO(bom);
     }
@@ -79,15 +80,15 @@ public class BomLinkServiceImpl implements BomLinkService {
 
         BomLink existing = bomLinkRepository.findById(id)
                 .orElseThrow(() ->
-        new BomNotFoundException("BOM not found with id " + id));
+                        new BomNotFoundException("BOM not found with id " + id));
 
         Item parent = itemRepository.findById(dto.getParentItemId())
                 .orElseThrow(() ->
-        new ItemNotFoundException("Parent item not found"));
+                        new ItemNotFoundException("Parent item not found"));
 
         Item child = itemRepository.findById(dto.getChildItemId())
                 .orElseThrow(() ->
-        new ItemNotFoundException("Child item not found"));
+                        new ItemNotFoundException("Child item not found"));
 
         if (parent.getId().equals(child.getId())) {
             throw new RuntimeException("Self reference not allowed");
@@ -106,10 +107,67 @@ public class BomLinkServiceImpl implements BomLinkService {
     public void deleteBomLink(Long id) {
 
         if (!bomLinkRepository.existsById(id)) {
-    throw new BomNotFoundException("BOM not found with id " + id);
-}
+            throw new BomNotFoundException("BOM not found with id " + id);
+        }
 
         bomLinkRepository.deleteById(id);
+    }
+
+    // ---------------- BOM TREE (NEW FEATURE) ----------------
+    @Override
+    public BomTreeResponse getBomTree(Long id) {
+
+        BomLink root = bomLinkRepository.findById(id)
+                .orElseThrow(() ->
+                        new BomNotFoundException("BOM not found with id " + id));
+
+        return buildTree(root);
+    }
+
+    @Override
+public BomTreeResponse getBomTreeByItem(Long itemId) {
+
+    Item rootItem = itemRepository.findById(itemId)
+            .orElseThrow(() ->
+                    new ItemNotFoundException("Item not found with id " + itemId));
+
+    List<BomLink> rootLinks =
+            bomLinkRepository.findByParentItem_Id(itemId);
+
+    List<BomTreeResponse> children =
+            rootLinks.stream()
+                    .map(this::buildTree)
+                    .collect(Collectors.toList());
+
+    return new BomTreeResponse(
+            rootItem.getId(),
+            rootItem.getItemName(),
+            rootItem.getItemName(),
+            1.0,
+            children
+    );
+}
+
+    // ---------------- RECURSIVE TREE BUILDER ----------------
+    private BomTreeResponse buildTree(BomLink link) {
+
+        Item parent = link.getParentItem();
+        Item child = link.getChildItem();
+
+        List<BomLink> childLinks =
+                bomLinkRepository.findByParentItem_Id(child.getId());
+
+        List<BomTreeResponse> children = childLinks.stream()
+                .map(this::buildTree)
+                .collect(Collectors.toList());
+
+        return new BomTreeResponse(
+                link.getId(),
+                parent.getItemName(),
+                child.getItemName(),
+                link.getQuantity(),
+                children
+        );
     }
 
     // ---------------- MAPPER ----------------

@@ -1,6 +1,7 @@
 package backend.controller;
 
 import backend.dto.BomLinkDTO;
+import backend.dto.BomTreeResponse;
 import backend.service.BomLinkService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,18 @@ public class BomLinkController {
         bomLinkService.deleteBomLink(id);
         return ResponseEntity.noContent().build();
     }
+
+    // ---------------- BOM TREE API ----------------
+    @GetMapping("/tree/{id}")
+    public ResponseEntity<BomTreeResponse> getBomTree(@PathVariable Long id) {
+        return ResponseEntity.ok(bomLinkService.getBomTree(id));
+    }
+    @GetMapping("/tree/item/{itemId}")
+public ResponseEntity<BomTreeResponse> getBomTreeByItem(
+        @PathVariable Long itemId) {
+
+    return ResponseEntity.ok(
+            bomLinkService.getBomTreeByItem(itemId)
+    );
+}
 }
