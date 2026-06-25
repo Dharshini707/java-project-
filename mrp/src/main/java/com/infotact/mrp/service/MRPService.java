@@ -53,4 +53,8 @@ public class MRPService {
     public void aggregateMaterials() {
     System.out.println("Aggregating duplicate raw materials");
 }
+public int calculateNetRequirement(int grossRequirement,
+                                   int availableStock) {
+    return grossRequirement - availableStock;
+}
 }
