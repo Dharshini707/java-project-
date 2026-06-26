@@ -37,11 +37,20 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getAllItems());
     }
 
+    // SEARCH
+    @GetMapping("/search")
+    public ResponseEntity<List<ItemDTO>> searchItems(
+            @RequestParam(required = false) String name) {
+
+        return ResponseEntity.ok(itemService.searchItems(name));
+    }
+
     // UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<ItemDTO> updateItem(
             @PathVariable Long id,
             @Valid @RequestBody ItemDTO itemDTO) {
+
         return ResponseEntity.ok(itemService.updateItem(id, itemDTO));
     }
 
