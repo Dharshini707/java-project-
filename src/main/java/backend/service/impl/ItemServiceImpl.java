@@ -6,6 +6,10 @@ import backend.exception.ItemNotFoundException;
 import backend.repository.ItemRepository;
 import backend.service.ItemService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,4 +106,17 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Long id) {
         itemRepository.deleteById(id);
     }
+
+    @Override
+public Page<ItemDTO> getItemsWithPagination(int page, int size, String sortBy) {
+
+    Pageable pageable = PageRequest.of(
+            page,
+            size,
+            Sort.by(sortBy)
+    );
+
+    return itemRepository.findAll(pageable)
+           .map(this::mapToDTO);
+}
 }

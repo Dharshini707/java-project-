@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -60,4 +61,21 @@ public class ItemController {
         itemService.deleteItem(id);
         return ResponseEntity.ok("Item deleted successfully");
     }
+
+    @GetMapping("/page")
+public ResponseEntity<Page<ItemDTO>> getItemsWithPagination(
+
+        @RequestParam(defaultValue = "0") int page,
+
+        @RequestParam(defaultValue = "5") int size,
+
+        @RequestParam(defaultValue = "itemName") String sort
+
+) {
+
+    return ResponseEntity.ok(
+            itemService.getItemsWithPagination(page, size, sort)
+    );
+
+}
 }
