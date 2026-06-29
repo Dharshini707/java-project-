@@ -1,8 +1,9 @@
 package backend.service;
 
 import backend.dto.ItemDTO;
-import java.util.List;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface ItemService {
 
@@ -15,6 +16,8 @@ public interface ItemService {
     ItemDTO updateItem(Long id, ItemDTO itemDTO);
 
     List<ItemDTO> searchItems(String name);
+
+    List<ItemDTO> searchItemsByType(String itemType);
 
     Page<ItemDTO> getItemsWithPagination(int page, int size, String sortBy);
 

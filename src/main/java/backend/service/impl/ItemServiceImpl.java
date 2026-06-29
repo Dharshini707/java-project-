@@ -3,13 +3,15 @@ package backend.service.impl;
 import backend.dto.ItemDTO;
 import backend.entity.Item;
 import backend.exception.ItemNotFoundException;
+import backend.mapper.ItemMapper;
 import backend.repository.ItemRepository;
 import backend.service.ItemService;
-import org.springframework.stereotype.Service;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,33 +25,14 @@ public class ItemServiceImpl implements ItemService {
         this.itemRepository = itemRepository;
     }
 
-    // ENTITY -> DTO
-    private ItemDTO mapToDTO(Item item) {
-        return new ItemDTO(
-                item.getId(),
-                item.getItemCode(),
-                item.getItemName(),
-                item.getDescription(),
-                item.getUnit()
-        );
-    }
-
-    // DTO -> ENTITY
-    private Item mapToEntity(ItemDTO dto) {
-        Item item = new Item();
-        item.setId(dto.getId());
-        item.setItemCode(dto.getItemCode());
-        item.setItemName(dto.getItemName());
-        item.setDescription(dto.getDescription());
-        item.setUnit(dto.getUnit());
-        return item;
-    }
-
     @Override
     public ItemDTO createItem(ItemDTO itemDTO) {
-        Item item = mapToEntity(itemDTO);
-        Item saved = itemRepository.save(item);
-        return mapToDTO(saved);
+
+        Item item = ItemMapper.toEntity(itemDTO);
+
+        Item savedItem = itemRepository.save(item);
+
+        return ItemMapper.toDTO(savedItem);
     }
 
     @Override
@@ -64,24 +47,26 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return items.stream()
-                .map(this::mapToDTO)
+                .map(ItemMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDTO getItemById(Long id) {
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() ->
                         new ItemNotFoundException("Item not found with id " + id));
 
-        return mapToDTO(item);
+        return ItemMapper.toDTO(item);
     }
 
     @Override
     public List<ItemDTO> getAllItems() {
+
         return itemRepository.findAll()
                 .stream()
-                .map(this::mapToDTO)
+                .map(ItemMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -94,12 +79,13 @@ public class ItemServiceImpl implements ItemService {
 
         item.setItemCode(itemDTO.getItemCode());
         item.setItemName(itemDTO.getItemName());
+        item.setItemType(itemDTO.getItemType());
         item.setDescription(itemDTO.getDescription());
         item.setUnit(itemDTO.getUnit());
 
-        Item updated = itemRepository.save(item);
+        Item updatedItem = itemRepository.save(item);
 
-        return mapToDTO(updated);
+        return ItemMapper.toDTO(updatedItem);
     }
 
     @Override
@@ -108,15 +94,31 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-public Page<ItemDTO> getItemsWithPagination(int page, int size, String sortBy) {
+    public Page<ItemDTO> getItemsWithPagination(int page, int size, String sortBy) {
 
-    Pageable pageable = PageRequest.of(
-            page,
-            size,
-            Sort.by(sortBy)
-    );
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(sortBy)
+        );
 
-    return itemRepository.findAll(pageable)
-           .map(this::mapToDTO);
+        return itemRepository.findAll(pageable)
+                .map(ItemMapper::toDTO);
+    }
+
+    @Override
+public List<ItemDTO> searchItemsByType(String itemType) {
+
+    List<Item> items;
+
+    if (itemType != null && !itemType.isBlank()) {
+        items = itemRepository.findByItemTypeContainingIgnoreCase(itemType);
+    } else {
+        items = itemRepository.findAll();
+    }
+
+    return items.stream()
+            .map(ItemMapper::toDTO)
+            .collect(Collectors.toList());
 }
 }

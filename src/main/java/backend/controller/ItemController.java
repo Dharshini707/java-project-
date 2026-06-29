@@ -3,10 +3,10 @@ package backend.controller;
 import backend.dto.ItemDTO;
 import backend.service.ItemService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -38,12 +38,20 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getAllItems());
     }
 
-    // SEARCH
+    // SEARCH BY NAME
     @GetMapping("/search")
     public ResponseEntity<List<ItemDTO>> searchItems(
             @RequestParam(required = false) String name) {
 
         return ResponseEntity.ok(itemService.searchItems(name));
+    }
+
+    // SEARCH BY TYPE
+    @GetMapping("/search/type")
+    public ResponseEntity<List<ItemDTO>> searchItemsByType(
+            @RequestParam(required = false) String itemType) {
+
+        return ResponseEntity.ok(itemService.searchItemsByType(itemType));
     }
 
     // UPDATE
@@ -62,20 +70,15 @@ public class ItemController {
         return ResponseEntity.ok("Item deleted successfully");
     }
 
+    // PAGINATION & SORTING
     @GetMapping("/page")
-public ResponseEntity<Page<ItemDTO>> getItemsWithPagination(
+    public ResponseEntity<Page<ItemDTO>> getItemsWithPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "itemName") String sort) {
 
-        @RequestParam(defaultValue = "0") int page,
-
-        @RequestParam(defaultValue = "5") int size,
-
-        @RequestParam(defaultValue = "itemName") String sort
-
-) {
-
-    return ResponseEntity.ok(
-            itemService.getItemsWithPagination(page, size, sort)
-    );
-
-}
+        return ResponseEntity.ok(
+                itemService.getItemsWithPagination(page, size, sort)
+        );
+    }
 }

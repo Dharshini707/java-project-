@@ -18,6 +18,8 @@ public class Item {
 
     private String itemName;
 
+    private String itemType;
+
     private String description;
 
     private String unit;
@@ -27,10 +29,11 @@ public class Item {
     }
 
     // Parameterized Constructor
-    public Item(Long id, String itemCode, String itemName, String description, String unit) {
+    public Item(Long id, String itemCode, String itemName, String itemType, String description, String unit) {
         this.id = id;
         this.itemCode = itemCode;
         this.itemName = itemName;
+        this.itemType = itemType;
         this.description = description;
         this.unit = unit;
     }
@@ -60,6 +63,14 @@ public class Item {
         this.itemName = itemName;
     }
 
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -82,6 +93,7 @@ public class Item {
                 "id=" + id +
                 ", itemCode='" + itemCode + '\'' +
                 ", itemName='" + itemName + '\'' +
+                ", itemType='" + itemType + '\'' +
                 ", description='" + description + '\'' +
                 ", unit='" + unit + '\'' +
                 '}';
