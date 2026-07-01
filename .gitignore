@@ -1,4 +1,4 @@
 target/
 .mvn/
 *.jar
-*.class
+*.classgit rm -r --cached target
