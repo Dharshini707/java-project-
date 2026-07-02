@@ -14,3 +14,35 @@
 - Inserted Bike, Wheel, Tyre, Tube, Frame
 - Confirmed persistence after application restart
 - Verified data using Postman and MySQL Workbench
+
+# Manufacturing MRP Backend
+
+## Technologies
+
+- Java
+- Spring Boot
+- Spring Data JPA
+- Hibernate
+- MySQL
+- Maven
+
+## Features
+
+- Item CRUD
+- BOM CRUD
+- BOM Hierarchy
+- Search by Name
+- Search by Item Type
+- Pagination
+- Validation
+- Global Exception Handling
+
+## Database
+
+MySQL (mrp)
+
+## Run
+
+```bash
+mvn spring-boot:run
+```
